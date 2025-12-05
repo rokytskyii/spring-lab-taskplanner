@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Планувальник задач</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body class="container py-4">
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Задачі</h1>
+    <div>
+        <a href="/task/new" class="btn btn-primary">Нова задача</a>
+    </div>
+</div>
+
+<div class="mb-3">
+    Сортувати за:
+    <a th:href="@{/(sort='date')}" class="btn btn-sm btn-outline-secondary">Датою</a>
+    <a th:href="@{/(sort='priority')}" class="btn btn-sm btn-outline-secondary">Пріоритетом</a>
+    <a th:href="@{/(sort='')}" class="btn btn-sm btn-outline-secondary">Без сортування</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Заголовок</th>
+        <th>Опис</th>
+        <th>Дата</th>
+        <th>Пріоритет</th>
+        <th>Статус</th>
+        <th>Дії</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks}">
+        <!-- 2.1 ELVIS-OPERATOR (?:) -->
+        <td th:text="${task.title} ?: 'Без назви'">Title</td>
+        <td th:text="${task.description} ?: 'Без опису'">Desc</td>
+        <td th:text="${task.dueDate} ?: 'Не вказано'">2025-01-01</td>
+
+        <td>
+            <th:block th:if="${task.priority != null}">
+                <th:block th:switch="${task.priority.name()}">
+                    <span th:case="'HIGH'" class="badge bg-danger">🔼 Високий</span>
+                    <span th:case="'MEDIUM'" class="badge bg-warning">🔸 Середній</span>
+                    <span th:case="'LOW'" class="badge bg-success">🔽 Низький</span>
+                </th:block>
+            </th:block>
+            <span th:if="${task.priority == null}" class="badge bg-secondary">Не вказано</span>
+        </td>
+
+        <td>
+            <span th:if="${task.done}" class="badge bg-success">✅ Виконано</span>
+            <span th:unless="${task.done}" class="badge bg-warning">⏳ Активна</span>
+        </td>
+
+        <td>
+            <a th:href="@{/task/edit/{id}(id=${task.id})}" class="btn btn-sm btn-outline-primary">Редагувати</a>
+            <a th:href="@{/task/delete/{id}(id=${task.id})}" class="btn btn-sm btn-outline-danger"
+               onclick="return confirm('Видалити?')">Видалити</a>
+            <a th:if="${!task.done}" th:href="@{/task/done/{id}(id=${task.id})}"
+               class="btn btn-sm btn-success">Позначити виконаною</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

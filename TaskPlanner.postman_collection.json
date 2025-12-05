@@ -1,0 +1,215 @@
+{
+  "info": {
+    "name": "Task Planner API",
+    "description": "REST API для управління задачами з повною CRUD функціональністю, фільтрацією, пагінацією та частковим оновленням",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "📋 Tasks Collection",
+      "item": [
+        {
+          "name": "1. 📥 Отримати всі задачі",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. 📄 Отримати задачі з пагінацією",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/paged?page=0&size=2&sort=title",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "paged"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "2"},
+                {"key": "sort", "value": "title"}
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. ➕ Створити нову задачу",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Нова задача з Postman\",\n  \"description\": \"Опис нової задачі\",\n  \"dueDate\": \"2024-12-31\",\n  \"priority\": \"HIGH\",\n  \"done\": false\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. 🔍 Отримати задачу по ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. ✏️ Оновити задачу (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"title\": \"Повністю оновлена задача\",\n  \"description\": \"Новий опис задачі\",\n  \"dueDate\": \"2024-12-25\",\n  \"priority\": \"MEDIUM\",\n  \"done\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. 🎯 Часткове оновлення задачі (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Оновлена назва через PATCH\",\n  \"done\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7. ✅ Позначити задачу виконаною",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/1/done",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "1", "done"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8. 🗑️ Видалити задачу",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9. ⭐ Фільтрація за пріоритетом",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/priority/HIGH",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "priority", "HIGH"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10. 📊 Фільтрація за статусом",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/status/false",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "status", "false"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "11. 📅 Фільтрація за діапазоном дат",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/due-date?start=2024-01-01&end=2024-12-31",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "due-date"],
+              "query": [
+                {"key": "start", "value": "2024-01-01"},
+                {"key": "end", "value": "2024-12-31"}
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
