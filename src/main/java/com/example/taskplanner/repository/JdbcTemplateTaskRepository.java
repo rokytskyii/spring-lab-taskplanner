@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@Primary // Цей репозиторій головний
+@Primary
 public class JdbcTemplateTaskRepository implements TaskRepository {
 
     private final JdbcTemplate jdbcTemplate;

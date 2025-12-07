@@ -5,6 +5,7 @@ import com.example.taskplanner.model.Priority;
 import com.example.taskplanner.model.TaskUpdateDto;
 import com.example.taskplanner.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Autowired
-    public void setNotificationService(NotificationService notificationService) {
+    public void setNotificationService(@Qualifier("prototypeNotificationService") NotificationService notificationService) {
         this.notificationService = notificationService;
     }
 
