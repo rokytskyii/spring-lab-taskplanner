@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository repository;
@@ -65,16 +67,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task save(Task task) {
-        System.out.println("=== ДЕБАГ ІНФОРМАЦІЯ ===");
-        System.out.println("Збереження: " + task.getTitle());
-        System.out.println("Пріоритет: " + task.getPriority());
-        System.out.println("Статус: " + task.isDone());
-        System.out.println("Опис: " + task.getDescription());
-        System.out.println("Дата: " + task.getDueDate());
-        System.out.println("======================");
-
         Task saved = repository.save(task);
-
         if (notificationService != null) {
             notificationService.notify("Task saved: " + saved.getTitle());
         }
@@ -98,7 +91,6 @@ public class TaskServiceImpl implements TaskService {
     public Page<Task> getTasksWithPagination(Pageable pageable) {
         List<Task> allTasks = repository.findAll();
 
-        // Проста реалізація пагінації для Stub репозиторію
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), allTasks.size());
 
