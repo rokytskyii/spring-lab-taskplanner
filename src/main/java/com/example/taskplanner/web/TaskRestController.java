@@ -46,7 +46,7 @@ public class TaskRestController {
     })
     public ResponseEntity<List<Task>> getAllTasks(
             @Parameter(description = "Sort by field: date, priority")
-            @RequestParam(required = false) String sort) {
+            @RequestParam(name = "sort", required = false) String sort) {
         try {
             List<Task> tasks = taskService.getAll(sort);
             return ResponseEntity.ok(tasks);
@@ -62,11 +62,11 @@ public class TaskRestController {
     )
     public ResponseEntity<Page<Task>> getTasksPaged(
             @Parameter(description = "Page number (0-based)")
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(name = "page", defaultValue = "0") int page,
             @Parameter(description = "Page size")
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(name = "size", defaultValue = "10") int size,
             @Parameter(description = "Sort field")
-            @RequestParam(defaultValue = "title") String sort) {
+            @RequestParam(name = "sort", defaultValue = "title") String sort) {
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
             Page<Task> tasks = taskService.getTasksWithPagination(pageable);
@@ -187,9 +187,9 @@ public class TaskRestController {
     @Operation(summary = "Get tasks by due date range")
     public ResponseEntity<List<Task>> getTasksByDueDateRange(
             @Parameter(description = "Start date (yyyy-MM-dd)")
-            @RequestParam String start,
+            @RequestParam(name = "start") String start,
             @Parameter(description = "End date (yyyy-MM-dd)")
-            @RequestParam String end) {
+            @RequestParam(name = "end") String end) {
         try {
             LocalDate startDate = LocalDate.parse(start);
             LocalDate endDate = LocalDate.parse(end);

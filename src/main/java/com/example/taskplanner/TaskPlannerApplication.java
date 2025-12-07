@@ -21,9 +21,11 @@ public class TaskPlannerApplication {
     @Bean
     CommandLineRunner initDemo(TaskRepository repo) {
         return args -> {
-            repo.save(new Task(null, "Купити продукти", "Купити хліб, молоко", LocalDate.now().plusDays(1), Priority.MEDIUM, false));
-            repo.save(new Task(null, "Написати звіт", "Лабораторна робота", LocalDate.now().plusDays(3), Priority.HIGH, false));
-            repo.save(new Task(null, "Прочитати книгу", "Розділ 4", LocalDate.now().plusWeeks(1), Priority.LOW, false));
+            if (repo.findAll().isEmpty()) {
+                repo.save(new Task(null, "Купити продукти", "Купити хліб, молоко", LocalDate.now().plusDays(1), Priority.MEDIUM, false));
+                repo.save(new Task(null, "Написати звіт", "Лабораторна робота", LocalDate.now().plusDays(3), Priority.HIGH, false));
+                repo.save(new Task(null, "Прочитати книгу", "Розділ 4", LocalDate.now().plusWeeks(1), Priority.LOW, false));
+            }
         };
     }
 }
