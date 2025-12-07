@@ -104,16 +104,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getTasksByPriority(Priority priority) {
-        return repository.findAll().stream()
-                .filter(task -> task.getPriority() == priority)
-                .collect(Collectors.toList());
+        return repository.findByPriority(priority);
     }
 
     @Override
     public List<Task> getTasksByStatus(boolean done) {
-        return repository.findAll().stream()
-                .filter(task -> task.isDone() == done)
-                .collect(Collectors.toList());
+        return repository.findByStatus(done);
     }
 
     @Override

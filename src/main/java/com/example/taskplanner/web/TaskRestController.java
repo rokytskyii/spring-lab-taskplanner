@@ -36,10 +36,7 @@ public class TaskRestController {
     }
 
     @GetMapping
-    @Operation(
-            summary = "Get all tasks",
-            description = "Retrieve a list of all tasks with optional sorting and pagination"
-    )
+    @Operation(summary = "Get all tasks")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved tasks"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
@@ -56,10 +53,7 @@ public class TaskRestController {
     }
 
     @GetMapping("/paged")
-    @Operation(
-            summary = "Get tasks with pagination",
-            description = "Retrieve tasks with pagination support"
-    )
+    @Operation(summary = "Get tasks with pagination")
     public ResponseEntity<Page<Task>> getTasksPaged(
             @Parameter(description = "Page number (0-based)")
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -84,7 +78,7 @@ public class TaskRestController {
     })
     public ResponseEntity<Task> getTaskById(
             @Parameter(description = "Task ID")
-            @PathVariable Long id) {
+            @PathVariable(name = "id") Long id) { // Додано name="id"
         Optional<Task> task = taskService.getById(id);
         return task.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -116,7 +110,7 @@ public class TaskRestController {
     })
     public ResponseEntity<Task> updateTask(
             @Parameter(description = "Task ID")
-            @PathVariable Long id,
+            @PathVariable(name = "id") Long id, // Додано name="id"
             @Parameter(description = "Updated task object")
             @Valid @RequestBody Task task) {
         if (!taskService.getById(id).isPresent()) {
@@ -128,17 +122,14 @@ public class TaskRestController {
     }
 
     @PatchMapping("/{id}")
-    @Operation(
-            summary = "Partially update a task",
-            description = "Update specific fields of a task (RFC 7386)"
-    )
+    @Operation(summary = "Partially update a task")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Task partially updated"),
             @ApiResponse(responseCode = "404", description = "Task not found")
     })
     public ResponseEntity<Task> partialUpdateTask(
             @Parameter(description = "Task ID")
-            @PathVariable Long id,
+            @PathVariable(name = "id") Long id, // Додано name="id"
             @Parameter(description = "Fields to update")
             @RequestBody TaskUpdateDto updateDto) {
         try {
@@ -157,7 +148,7 @@ public class TaskRestController {
     })
     public ResponseEntity<Void> deleteTask(
             @Parameter(description = "Task ID")
-            @PathVariable Long id) {
+            @PathVariable(name = "id") Long id) { // Додано name="id"
         if (!taskService.getById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
@@ -169,7 +160,7 @@ public class TaskRestController {
     @Operation(summary = "Get tasks by priority")
     public ResponseEntity<List<Task>> getTasksByPriority(
             @Parameter(description = "Priority level")
-            @PathVariable Priority priority) {
+            @PathVariable(name = "priority") Priority priority) { // Додано name="priority"
         List<Task> tasks = taskService.getTasksByPriority(priority);
         return ResponseEntity.ok(tasks);
     }
@@ -178,7 +169,7 @@ public class TaskRestController {
     @Operation(summary = "Get tasks by completion status")
     public ResponseEntity<List<Task>> getTasksByStatus(
             @Parameter(description = "Completion status")
-            @PathVariable boolean done) {
+            @PathVariable(name = "done") boolean done) { // Додано name="done"
         List<Task> tasks = taskService.getTasksByStatus(done);
         return ResponseEntity.ok(tasks);
     }
@@ -204,7 +195,7 @@ public class TaskRestController {
     @Operation(summary = "Mark task as done")
     public ResponseEntity<Void> markTaskAsDone(
             @Parameter(description = "Task ID")
-            @PathVariable Long id) {
+            @PathVariable(name = "id") Long id) { // Додано name="id"
         if (!taskService.getById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }

@@ -1,5 +1,6 @@
 package com.example.taskplanner.repository;
 
+import com.example.taskplanner.model.Priority;
 import com.example.taskplanner.model.Task;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -64,5 +65,17 @@ public class JdbcTemplateTaskRepository implements TaskRepository {
     @Override
     public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM tasks WHERE id = ?", id);
+    }
+
+    @Override
+    public List<Task> findByPriority(Priority priority) {
+        String sql = "SELECT * FROM tasks WHERE priority = ?";
+        return jdbcTemplate.query(sql, new TaskRowMapper(), priority.name());
+    }
+
+    @Override
+    public List<Task> findByStatus(boolean done) {
+        String sql = "SELECT * FROM tasks WHERE done = ?";
+        return jdbcTemplate.query(sql, new TaskRowMapper(), done);
     }
 }

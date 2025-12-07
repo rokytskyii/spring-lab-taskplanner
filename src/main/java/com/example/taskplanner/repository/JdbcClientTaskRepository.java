@@ -1,5 +1,6 @@
 package com.example.taskplanner.repository;
 
+import com.example.taskplanner.model.Priority;
 import com.example.taskplanner.model.Task;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -60,5 +61,21 @@ public class JdbcClientTaskRepository implements TaskRepository {
     @Override
     public void deleteById(Long id) {
         jdbcClient.sql("DELETE FROM tasks WHERE id = :id").param("id", id).update();
+    }
+
+    @Override
+    public List<Task> findByPriority(Priority priority) {
+        return jdbcClient.sql("SELECT * FROM tasks WHERE priority = :priority")
+                .param("priority", priority.name())
+                .query(new TaskRowMapper())
+                .list();
+    }
+
+    @Override
+    public List<Task> findByStatus(boolean done) {
+        return jdbcClient.sql("SELECT * FROM tasks WHERE done = :done")
+                .param("done", done)
+                .query(new TaskRowMapper())
+                .list();
     }
 }
