@@ -36,16 +36,24 @@ public class TaskRestController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all tasks")
+    @Operation(summary = "Get all tasks or search by keyword")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved tasks"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<List<Task>> getAllTasks(
             @Parameter(description = "Sort by field: date, priority")
-            @RequestParam(name = "sort", required = false) String sort) {
+            @RequestParam(name = "sort", required = false) String sort,
+            @Parameter(description = "Search keyword for title")
+            @RequestParam(name = "keyword", required = false) String keyword) {
         try {
-            List<Task> tasks = taskService.getAll(sort);
+            List<Task> tasks;
+
+            if (keyword != null && !keyword.isEmpty()) {
+                tasks = taskService.searchByTitle(keyword);
+            } else {
+                tasks = taskService.getAll(sort);
+            }
             return ResponseEntity.ok(tasks);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -78,7 +86,7 @@ public class TaskRestController {
     })
     public ResponseEntity<Task> getTaskById(
             @Parameter(description = "Task ID")
-            @PathVariable(name = "id") Long id) { // Додано name="id"
+            @PathVariable(name = "id") Long id) {
         Optional<Task> task = taskService.getById(id);
         return task.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -110,7 +118,7 @@ public class TaskRestController {
     })
     public ResponseEntity<Task> updateTask(
             @Parameter(description = "Task ID")
-            @PathVariable(name = "id") Long id, // Додано name="id"
+            @PathVariable(name = "id") Long id,
             @Parameter(description = "Updated task object")
             @Valid @RequestBody Task task) {
         if (!taskService.getById(id).isPresent()) {
@@ -129,7 +137,7 @@ public class TaskRestController {
     })
     public ResponseEntity<Task> partialUpdateTask(
             @Parameter(description = "Task ID")
-            @PathVariable(name = "id") Long id, // Додано name="id"
+            @PathVariable(name = "id") Long id,
             @Parameter(description = "Fields to update")
             @RequestBody TaskUpdateDto updateDto) {
         try {
@@ -148,7 +156,7 @@ public class TaskRestController {
     })
     public ResponseEntity<Void> deleteTask(
             @Parameter(description = "Task ID")
-            @PathVariable(name = "id") Long id) { // Додано name="id"
+            @PathVariable(name = "id") Long id) {
         if (!taskService.getById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
@@ -160,7 +168,7 @@ public class TaskRestController {
     @Operation(summary = "Get tasks by priority")
     public ResponseEntity<List<Task>> getTasksByPriority(
             @Parameter(description = "Priority level")
-            @PathVariable(name = "priority") Priority priority) { // Додано name="priority"
+            @PathVariable(name = "priority") Priority priority) {
         List<Task> tasks = taskService.getTasksByPriority(priority);
         return ResponseEntity.ok(tasks);
     }
@@ -169,7 +177,7 @@ public class TaskRestController {
     @Operation(summary = "Get tasks by completion status")
     public ResponseEntity<List<Task>> getTasksByStatus(
             @Parameter(description = "Completion status")
-            @PathVariable(name = "done") boolean done) { // Додано name="done"
+            @PathVariable(name = "done") boolean done) {
         List<Task> tasks = taskService.getTasksByStatus(done);
         return ResponseEntity.ok(tasks);
     }
@@ -195,7 +203,7 @@ public class TaskRestController {
     @Operation(summary = "Mark task as done")
     public ResponseEntity<Void> markTaskAsDone(
             @Parameter(description = "Task ID")
-            @PathVariable(name = "id") Long id) { // Додано name="id"
+            @PathVariable(name = "id") Long id) {
         if (!taskService.getById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }

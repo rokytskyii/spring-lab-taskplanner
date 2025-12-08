@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.example.taskplanner.model.Priority;
 import com.example.taskplanner.model.Task;
@@ -21,27 +22,25 @@ public class TaskPlannerApplication {
     }
 
     @Bean
-    CommandLineRunner initDemo(TaskRepository taskRepo, CategoryRepository categoryRepo) {
+    CommandLineRunner initDemo(TaskRepository taskRepo, CategoryRepository categoryRepo, TransactionTemplate txTemplate) {
         return args -> {
-            if (taskRepo.findAll().isEmpty()) {
+            txTemplate.execute(status -> {
+                if (taskRepo.findAll().isEmpty()) {
+                    Category catShopping = categoryRepo.findByName("Покупки");
+                    if (catShopping == null) catShopping = categoryRepo.save(new Category("Покупки"));
 
-                Category defaultCategory = new Category("Загальне");
-                if (categoryRepo.count() == 0) {
-                    defaultCategory = categoryRepo.save(defaultCategory);
-                } else {
-                    defaultCategory = categoryRepo.findAll().get(0);
+                    Category catWork = categoryRepo.findByName("Робота");
+                    if (catWork == null) catWork = categoryRepo.save(new Category("Робота"));
+
+                    Category catStudy = categoryRepo.findByName("Навчання");
+                    if (catStudy == null) catStudy = categoryRepo.save(new Category("Навчання"));
+
+                    taskRepo.save(new Task(null, "Купити продукти", "Хліб, молоко", LocalDate.now().plusDays(1), Priority.MEDIUM, false, catShopping));
+                    taskRepo.save(new Task(null, "Написати звіт", "Лабораторна 6", LocalDate.now().plusDays(3), Priority.HIGH, false, catStudy)); // Змінив на Навчання
+                    taskRepo.save(new Task(null, "Прочитати книгу", "Розділ 4", LocalDate.now().plusWeeks(1), Priority.LOW, false, catWork)); // Змінив на Робота
                 }
-
-                // 2. Тепер передаємо об'єкт defaultCategory як 7-й аргумент у конструктор
-                taskRepo.save(new Task(null, "Купити продукти", "Купити хліб, молоко",
-                        LocalDate.now().plusDays(1), Priority.MEDIUM, false, defaultCategory));
-
-                taskRepo.save(new Task(null, "Написати звіт", "Лабораторна робота",
-                        LocalDate.now().plusDays(3), Priority.HIGH, false, defaultCategory));
-
-                taskRepo.save(new Task(null, "Прочитати книгу", "Розділ 4",
-                        LocalDate.now().plusWeeks(1), Priority.LOW, false, defaultCategory));
-            }
+                return null;
+            });
         };
     }
 }

@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskService {
-    List<Task> getAll(String sortBy); // sortBy = "date" | "priority" | null
+    List<Task> getAll(String sortBy);
+    List<Task> searchByTitle(String title);
     Optional<Task> getById(Long id);
     Task save(Task task);
     void delete(Long id);
