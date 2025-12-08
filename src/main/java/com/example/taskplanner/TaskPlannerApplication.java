@@ -1,5 +1,7 @@
 package com.example.taskplanner;
 
+import com.example.taskplanner.model.Category;
+import com.example.taskplanner.repository.CategoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,12 +21,26 @@ public class TaskPlannerApplication {
     }
 
     @Bean
-    CommandLineRunner initDemo(TaskRepository repo) {
+    CommandLineRunner initDemo(TaskRepository taskRepo, CategoryRepository categoryRepo) {
         return args -> {
-            if (repo.findAll().isEmpty()) {
-                repo.save(new Task(null, "Купити продукти", "Купити хліб, молоко", LocalDate.now().plusDays(1), Priority.MEDIUM, false));
-                repo.save(new Task(null, "Написати звіт", "Лабораторна робота", LocalDate.now().plusDays(3), Priority.HIGH, false));
-                repo.save(new Task(null, "Прочитати книгу", "Розділ 4", LocalDate.now().plusWeeks(1), Priority.LOW, false));
+            if (taskRepo.findAll().isEmpty()) {
+
+                Category defaultCategory = new Category("Загальне");
+                if (categoryRepo.count() == 0) {
+                    defaultCategory = categoryRepo.save(defaultCategory);
+                } else {
+                    defaultCategory = categoryRepo.findAll().get(0);
+                }
+
+                // 2. Тепер передаємо об'єкт defaultCategory як 7-й аргумент у конструктор
+                taskRepo.save(new Task(null, "Купити продукти", "Купити хліб, молоко",
+                        LocalDate.now().plusDays(1), Priority.MEDIUM, false, defaultCategory));
+
+                taskRepo.save(new Task(null, "Написати звіт", "Лабораторна робота",
+                        LocalDate.now().plusDays(3), Priority.HIGH, false, defaultCategory));
+
+                taskRepo.save(new Task(null, "Прочитати книгу", "Розділ 4",
+                        LocalDate.now().plusWeeks(1), Priority.LOW, false, defaultCategory));
             }
         };
     }

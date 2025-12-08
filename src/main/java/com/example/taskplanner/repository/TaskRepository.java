@@ -2,15 +2,22 @@ package com.example.taskplanner.repository;
 
 import com.example.taskplanner.model.Priority;
 import com.example.taskplanner.model.Task;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
-public interface TaskRepository {
-    List<Task> findAll();
-    Optional<Task> findById(Long id);
-    Task save(Task task);
-    void deleteById(Long id);
-    List<Task> findByPriority(Priority priority);
-    List<Task> findByStatus(boolean done);
+public interface TaskRepository extends JpaRepository<Task, Long> {
+
+    List<Task> findByDone(boolean done);
+
+    List<Task> findByDueDateBetween(LocalDate start, LocalDate end);
+
+    @Query("SELECT t FROM Task t WHERE LOWER(t.title) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Task> searchByTitle(@Param("keyword") String keyword);
+
+    @Query(name = "Task.findByPriorityNamed")
+    List<Task> findByPriorityCustom(@Param("priority") Priority priority);
 }

@@ -1,0 +1,201 @@
+{
+  "info": {
+    "_postman_id": "final-lab6-collection",
+    "name": "Task Planner Lab 6 (Full CRUD + JPA)",
+    "description": "Повна колекція: CRUD операції з Категоріями + Специфічні тести JPA (JPQL, NamedQuery, Transactions)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔹 CRUD Operations",
+      "item": [
+        {
+          "name": "1. Отримати всі задачі (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Створити задачу з КАТЕГОРІЄЮ (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Задача з категорією\",\n  \"description\": \"Тест повного CRUD\",\n  \"priority\": \"HIGH\",\n  \"dueDate\": \"2024-12-31\",\n  \"category\": {\n      \"name\": \"Робота\"\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Отримати по ID (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Оновити задачу та категорію (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"title\": \"Оновлена задача\",\n  \"description\": \"Змінили опис і категорію\",\n  \"priority\": \"MEDIUM\",\n  \"dueDate\": \"2024-12-25\",\n  \"done\": true,\n  \"category\": {\n      \"id\": 1\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Видалити задачу (DELETE)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔹 Lab 6 Requirements (JPA & Transactions)",
+      "item": [
+        {
+          "name": "6. Тест Транзакції (Cascade Save)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Транзакційна задача\",\n  \"priority\": \"LOW\",\n  \"category\": {\n      \"name\": \"Нова Унікальна Категорія\"\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/tasks",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7. Пошук за назвою (JPQL @Query)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks?sort=date&keyword=задача",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks"],
+              "query": [
+                {"key": "sort", "value": "date"},
+                {"key": "keyword", "value": "задача"}
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8. Фільтр пріоритету (@NamedQuery)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/priority/HIGH",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "priority", "HIGH"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9. Пагінація (Spring Data)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/paged?page=0&size=5&sort=id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "paged"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "5"},
+                {"key": "sort", "value": "id"}
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10. Пошук по датах (Between)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/tasks/due-date?start=2024-01-01&end=2024-12-31",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "tasks", "due-date"],
+              "query": [
+                {"key": "start", "value": "2024-01-01"},
+                {"key": "end", "value": "2024-12-31"}
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
